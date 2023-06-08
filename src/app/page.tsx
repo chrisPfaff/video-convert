@@ -3,33 +3,27 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useState } from "react";
 
+import DragZone from "./components/DragZone";
+
 const ffmpeg = createFFmpeg({ log: true });
 
 export default function Home() {
-  const [ready, setReady] = useState(false);
   const [videoSrc, seVideoSrc] = useState("");
+  const [result, setResult] = useState("");
   const [video, setVideo] = useState<File | null>(null);
-  const [result, setResult] = useState<string | null>(null);
 
   const videoLoad = async () => {
     await ffmpeg.load();
-    setReady(true);
   };
-  const uploadVideo = async (data: File | null, isResult: boolean) => {
-    if (isResult) {
-      setVideo(data);
-      if (data) {
-        var url = URL.createObjectURL(data);
-        seVideoSrc(url);
-      } else {
-        if (data) {
-          var url = URL.createObjectURL(data);
-          setResult(url);
-        }
-      }
+
+  const uploadVideo = async (data: File | null) => {
+    setVideo(data);
+    if (data) {
+      var url = URL.createObjectURL(data);
+      seVideoSrc(url);
     }
   };
-  const convertToGif = async () => {
+  const convertVideo = async () => {
     if (video) {
       ffmpeg.FS("writeFile", "test.mp4", await fetchFile(video));
       await ffmpeg.run("-i", "test.mp4", "-vf", "format=gray", "output.mp4");
@@ -46,10 +40,15 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 gap-4 overflow-auto">
       <div className="flex-col items-center justify-center w-96 h-auto">
-        {videoSrc && (
+        {/* {videoSrc && (
           <video src={videoSrc} controls width="350" height="350"></video>
+        )} */}
+        {videoSrc ? (
+          <video src={videoSrc} controls width="350" height="350"></video>
+        ) : (
+          <DragZone setVideo={setVideo} seVideoSrc={seVideoSrc} />
         )}
       </div>
       <form>
@@ -57,16 +56,16 @@ export default function Home() {
           type="file"
           onChange={(e) => {
             if (e.target.files) {
-              uploadVideo(e.target.files?.item(0), true);
+              uploadVideo(e.target.files?.item(0));
             }
           }}
         />
       </form>
       <button
-        onClick={convertToGif}
+        onClick={convertVideo}
         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       >
-        convert to gif
+        convert
       </button>
       <div className="flex-col items-center justify-center w-96 h-56">
         {result && (
