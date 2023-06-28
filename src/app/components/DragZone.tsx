@@ -1,21 +1,16 @@
 import { Dispatch, useState } from "react";
 
 export default function DragZone({
-  setVideo,
-  seVideoSrc,
+  uploadVideo,
 }: {
-  setVideo: Dispatch<File | null>;
-  seVideoSrc: string;
+  uploadVideo: Dispatch<File | null>;
 }) {
   const dropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    //seVideoSrc(URL.createObjectURL(event.dataTransfer.files[0]));
-    //setVideo(event.dataTransfer.files[0]);
-    console.log(event);
+    uploadVideo(event.dataTransfer.files[0]);
   };
   const dragOverHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    console.log(event);
   };
   return (
     <div
