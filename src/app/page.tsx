@@ -8,7 +8,7 @@ import SideBar from "./components/Sidebar";
 
 const ffmpeg = createFFmpeg({ log: true });
 
-export default function Home() {
+export default function Home(): JSX.Element {
   const [showSidebar, setShowSidebar] = useState(false);
   const [videoSrc, seVideoSrc] = useState("");
   const [result, setResult] = useState("");

@@ -6,7 +6,7 @@ export default function SideBar({
   showSidebar: boolean;
   closeSidebar: <HTMLButtonElement>() => void;
   chooseOptions: (option: string) => void;
-}) {
+}): JSX.Element {
   const options = ["Black & White", "Blur", "Stabalize", "Reverse", "Vignette"];
   return (
     <nav
